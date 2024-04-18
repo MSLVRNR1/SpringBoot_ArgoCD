@@ -1,4 +1,3 @@
-[22:17] Merlin Luedi
 name: Pipeline
 on:
   push:
