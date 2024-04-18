@@ -10,7 +10,18 @@
 			"name": "New Request",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "https://web.postman.co/workspace/My-Workspace~022515d0-ac7e-40c1-8236-a45b8d13d1c9/collection/34367549-dd0fd503-ed5c-451f-8b48-06c94d06f0ee?action=share&source=copy-link&creator=34367549",
+					"protocol": "http",
+					"host": [
+						"example",
+						"com"
+					],
+					"path": [
+						"api"
+					]
+				}
 			},
 			"response": []
 		}
