@@ -30,7 +30,7 @@ jobs:
 
   deploy-to-staging-and-run-further-tests:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/release' || (github.event_name == 'pull_request' && github.base_ref == 'release' && github.head_ref == 'main')
     needs: run-unit-and-integration-tests
     steps:
       - name: Checkout code
