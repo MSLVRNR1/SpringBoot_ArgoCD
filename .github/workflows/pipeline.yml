@@ -37,7 +37,7 @@ jobs:
         run: npm install -g newman
 
       - name: Run system tests with Newman
-        run: newman run src/test/systems/tests.json
+        run: newman run src/test/system/tests.json
 
   deploy-to-production:
     runs-on: ubuntu-latest
