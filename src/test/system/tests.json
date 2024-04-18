@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "dd0fd503-ed5c-451f-8b48-06c94d06f0ee",
+		"name": "API System Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34367549"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.globals.get(\"variable_key\");\r",
+					"pm.environment.get(\"variable_key\");\r",
+					"pm.variables.get(\"variable_key\");"
+				]
+			}
+		}
+	]
+}
