@@ -2,9 +2,9 @@ name: Pipeline
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ 'development', 'release' ]
   pull_request:
-    branches: [ '*' ]
+    branches: [ 'development', 'release' ]
 
 jobs:
   run-unit-and-integration-tests:
@@ -30,7 +30,7 @@ jobs:
 
   deploy-to-staging-and-run-further-tests:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/release' || (github.event_name == 'pull_request' && github.base_ref == 'release' && github.head_ref == 'main')
+    if: github.ref == 'refs/heads/release'
     needs: run-unit-and-integration-tests
     steps:
       - name: Checkout code
@@ -77,20 +77,12 @@ jobs:
 
       - name: Wait for ArgoCD deployment
         run: |
-          # Add commands to check the status of ArgoCD deployment here
-          # You may use ArgoCD CLI or API to check the deployment status
-          # Example:
+          # Placeholder for ArgoCD deployment check commands
           # argocd app wait <APP_NAME> --timeout 300
-
-      - name: Install Newman
-        run: npm install -g newman
-
-      - name: Run system tests with Newman
-        run: newman run ./src/test/system/API\ System\ Tests.postman_collection.json
 
   deploy-to-production:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/development'
     steps:
       - name: Checkout GitOps repository
         uses: actions/checkout@v4
@@ -104,12 +96,14 @@ jobs:
           version=$(grep 'tag:' values_staging.yml | awk '{print $2}')
           sed -i "s/tag: .*/tag: $version/" values_production.yml
 
-      - name: Create Pull Request
+      - name: Create Pull Request to Main Branch
+        id: create_pull_request
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
-          commit-message: "Deploy $version to production"
-          title: "Update production to $version"
-          body: "This is an automated pull request to update the production image tag to the new version."
-          branch: "update-production-$version"
-##auauauua
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update production image tag to ${{ env.PROJECT_VERSION }}"
+          title: "Production Deployment: ${{ env.PROJECT_VERSION }}"
+          body: "This is an automated pull request to update the production image tag to ${{ env.PROJECT_VERSION }}"
+          branch: "production-update-${{ github.run_id }}"
+          base: "main"
+          labels: "deployment,automated-pr"
