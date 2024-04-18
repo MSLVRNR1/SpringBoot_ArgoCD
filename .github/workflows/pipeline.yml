@@ -1,9 +1,11 @@
 name: Pipeline
+
 on:
   push:
-    branches: [ 'development', 'release' ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ 'development', 'release' ]
+    branches: [ '*' ]
+
 jobs:
   run-unit-and-integration-tests:
     runs-on: ubuntu-latest
@@ -11,6 +13,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -23,7 +26,7 @@ jobs:
         run: ./gradlew test --tests '*.*Integration*'
   deploy-to-staging-and-run-further-tests:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/release' || (github.event_name == 'pull_request' && github.base_ref == 'release' && github.head_ref == 'main')
     needs: run-unit-and-integration-tests
     steps:
       - name: Checkout code
@@ -64,6 +67,7 @@ jobs:
         run: |
           # Placeholder for ArgoCD deployment check commands
           # argocd app wait <APP_NAME> --timeout 300
+
   run-json-test:
     runs-on: ubuntu-latest
     needs: run-unit-and-integration-tests
@@ -74,6 +78,7 @@ jobs:
         run: npm install -g newman
       - name: Run system tests with Newman
         run: newman run src/test/system/tests.json
+
   deploy-to-production:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
